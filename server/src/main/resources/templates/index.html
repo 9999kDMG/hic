@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        * {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 14px;
+        }
+
+        .form-wrapper {
+            padding: 40px;
+            width: 300px;
+            margin: 50px auto;
+        }
+
+        form {
+            margin-bottom: 40px;
+        }
+
+        input {
+            padding: 0 5px;
+            display: block;
+            box-sizing: border-box;
+            height: 30px;
+            margin: 10px 0;
+            border: 1px solid #7b7b7b;
+            width: 100%;
+        }
+
+        button {
+            height: 30px;
+        }
+
+        .total {
+            visibility: hidden;
+            font-weight: 500;
+        }
+
+        .visible {
+            visibility: visible;
+        }
+    </style>
+</head>
+<body>
+<div class="form-wrapper">
+    <form class="form" id="form">
+        <input name="date" id="date-input" type="month" placeholder="Date"/>
+        <input name="salary" id="salary-input" type="number" placeholder="Salary"/>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <div class="total" id="hour-income"></div>
+    <div class="total" id="workdays-month"></div>
+</div>
+
+
+<script>
+    const formEl = document.getElementById('form')
+
+    const dateInputEl = document.getElementById('date-input')
+    const salaryInputEl = document.getElementById('salary-input')
+
+    const hourIncomeEl = document.getElementById('hour-income')
+    const workdaysMonthEl = document.getElementById('workdays-month')
+
+    formEl.addEventListener('submit', (event) => {
+        event.preventDefault()
+
+        const dateValue = dateInputEl.value
+        const salaryValue = salaryInputEl.value
+
+        if (!dateValue || !salaryValue) {
+            return
+        }
+
+        const date = new Date(dateValue)
+        const year = date.getFullYear()
+        const month = date.toLocaleDateString('en-GB', {month: 'long'}).toUpperCase()
+
+        fetch('/hic/income?' + new URLSearchParams({
+            year,
+            month,
+            salary: salaryValue,
+        }),)
+            .then(response => response.json())
+            .then(data => {
+                hourIncomeEl.classList.add('visible')
+                workdaysMonthEl.classList.add('visible')
+
+                hourIncomeEl.textContent = `Income per hour: ${data['hour_income']}`
+                workdaysMonthEl.textContent = `Workdays in the month: ${data['workdays_month']}`
+            })
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 14px;
+        }
+
+        .form-wrapper {
+            padding: 40px;
+            width: 300px;
+            margin: 50px auto;
+        }
+
+        input[type=text], input[type=password] {
+            padding: 0 5px;
+            display: block;
+            box-sizing: border-box;
+            height: 30px;
+            margin: 10px 0;
+            border: 1px solid #7b7b7b;
+            width: 100%;
+        }
+
+        button {
+            background-color: #04AA6D;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        .container {
+            padding: 16px;
+        }
+
+        span.psw {
+            float: right;
+            padding-top: 16px;
+        }
+
+    </style>
+</head>
+
+<body>
+<div class="form-wrapper">
+    <form class="form" id="form">
+        <div class="container">
+            <label><b>Username</b></label>
+            <input type="text" placeholder="Enter Email" name="email" id="email" required>
+
+            <label><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" name="password" id="password" required>
+
+            <button type="submit">Login</button>
+            <span class="psw"><a href="/registration">Registration</a></span>
+        </div>
+    </form>
+</div>
+
+<script>
+    const formEl = document.getElementById('form')
+
+    const emailInput = document.getElementById('email')
+    const passwordInput = document.getElementById('password')
+
+
+    formEl.addEventListener('submit', (event) => {
+        event.preventDefault()
+
+        const emailValue = emailInput.value
+        const passwordValue = passwordInput.value
+
+        fetch('/auth/authenticate', {
+            method: 'post',
+            credentials: "include",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: emailValue,
+                password: passwordValue
+            })
+
+        }).then(response => response.json())
+            .then(() => {
+                    window.location.replace("/hic/main");
+                }
+            )
+    })
+</script>
+</body>
+</html>
